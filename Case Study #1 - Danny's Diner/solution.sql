@@ -79,7 +79,7 @@ WITH orders AS (
     SELECT
         product_name
         , order_count
-    , DENSE_RANK ( ) OVER (ORDER BY order_count DESC) AS order_rank
+    , DENSE_RANK () OVER (ORDER BY order_count DESC) AS order_rank
     FROM orders
     )
 
@@ -101,7 +101,25 @@ ORDER BY count(*) DESC
 limit 1
 
 -- 5. Which item was the most popular for each customer?
-
+-- Solution
+WITH ranks AS(
+    SELECT
+        a.customer_id
+        , b.product_name
+        , DENSE_RANK () OVER (
+            PARTITION BY a.customer_id 
+            ORDER BY count(*) DESC)    AS order_rank
+    FROM dannys_diner.sales a
+        JOIN dannys_diner.menu b ON a.product_id = b.product_id
+    GROUP BY
+        a.customer_id
+        , b.product_name
+    )
+SELECT 
+    customer_id
+    , product_name
+FROM ranks
+WHERE order_rank = 1
 
 -- 6. Which item was purchased first by the customer after they became a member?
 -- 7. Which item was purchased just before the customer became a member?
