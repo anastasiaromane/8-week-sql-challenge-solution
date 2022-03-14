@@ -92,7 +92,7 @@ WHERE order_rank = 1
 -- Soluton #2 - simplified
 SELECT
     b.product_name
-    , count(*) AS max_count
+    , count(*)      AS count
 FROM dannys_diner.sales a
     JOIN dannys_diner.menu b ON a.product_id = b.product_id
 GROUP BY
@@ -101,6 +101,7 @@ ORDER BY count(*) DESC
 limit 1
 
 -- 5. Which item was the most popular for each customer?
+
 
 -- 6. Which item was purchased first by the customer after they became a member?
 -- 7. Which item was purchased just before the customer became a member?
