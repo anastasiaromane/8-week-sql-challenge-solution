@@ -31,7 +31,9 @@ FROM (
     SELECT
         a.customer_id
         , b.product_name
-        , DENSE_RANK ( ) OVER (PARTITION BY a.customer_id ORDER BY a.order_date ASC) AS date_rank
+        , DENSE_RANK ( ) OVER (
+            PARTITION BY a.customer_id 
+            ORDER BY a.order_date ASC) AS date_rank
     FROM dannys_diner.sales a
         JOIN dannys_diner.menu b ON a.product_id = b.product_id
     GROUP BY
