@@ -25,7 +25,41 @@ ORDER BY
     a.customer_id
 
 -- 3. What was the first item from the menu purchased by each customer?
+-- Solution #1
+SELECT *
+FROM (
+    SELECT
+        a.customer_id
+        , b.product_name
+        , DENSE_RANK ( ) OVER (PARTITION BY a.customer_id ORDER BY a.order_date ASC) AS date_rank
+    FROM dannys_diner.sales a
+        JOIN dannys_diner.menu b on a.product_id = b.product_id
+    GROUP BY
+        a.customer_id
+        , b.product_name
+        , a.order_date
+    ) temp
+WHERE temp.date_rank = 1
 
+-- Solution #2 with CTE
+WITH temp AS (
+    SELECT
+        a.customer_id
+        , b.product_name
+        , DENSE_RANK ( ) OVER (
+            PARTITION BY a.customer_id 
+            ORDER BY a.order_date ASC
+            ) AS date_rank
+    FROM dannys_diner.sales a
+        JOIN dannys_diner.menu b on a.product_id = b.product_id
+    GROUP BY
+        a.customer_id
+        , b.product_name
+        , a.order_date
+    )
+SELECT *
+FROM temp
+WHERE temp.date_rank = 1
 
 -- 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 -- 5. Which item was the most popular for each customer?
