@@ -122,6 +122,36 @@ FROM ranks
 WHERE order_rank = 1
 
 -- 6. Which item was purchased first by the customer after they became a member?
+WITH ranks AS (
+    SELECT
+        a.customer_id
+        , b.product_name
+        , a.order_date
+        , c.join_date
+        , DENSE_RANK ( ) OVER (
+                PARTITION BY a.customer_id 
+                ORDER BY a.order_date ASC
+                ) AS date_rank
+    FROM dannys_diner.sales a
+        JOIN dannys_diner.menu b ON a.product_id = b.product_id
+        JOIN dannys_diner.members c ON a.customer_id = c.customer_id
+    WHERE a.order_date >= c.join_date
+    GROUP BY
+        a.customer_id
+        , b.product_name
+        , a.order_date
+        , c.join_date
+    ORDER BY
+        a.customer_id
+   )
+SELECT
+    customer_id
+    , product_name
+    , order_date
+    , join_date
+FROM ranks
+WHERE date_rank = 1
+
 -- 7. Which item was purchased just before the customer became a member?
 -- 8. What is the total items and amount spent for each member before they became a member?
 -- 9.  If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
