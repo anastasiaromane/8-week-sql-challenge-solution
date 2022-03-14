@@ -8,7 +8,7 @@ SELECT
     a.customer_id
     , sum(b.price)
 FROM dannys_diner.sales a
-    JOIN dannys_diner.menu b on a.product_id = b.product_id
+    JOIN dannys_diner.menu b ON a.product_id = b.product_id
 GROUP BY
     a.customer_id
 ORDER BY
@@ -33,7 +33,7 @@ FROM (
         , b.product_name
         , DENSE_RANK ( ) OVER (PARTITION BY a.customer_id ORDER BY a.order_date ASC) AS date_rank
     FROM dannys_diner.sales a
-        JOIN dannys_diner.menu b on a.product_id = b.product_id
+        JOIN dannys_diner.menu b ON a.product_id = b.product_id
     GROUP BY
         a.customer_id
         , b.product_name
@@ -51,7 +51,7 @@ WITH temp AS (
             ORDER BY a.order_date ASC
             ) AS date_rank
     FROM dannys_diner.sales a
-        JOIN dannys_diner.menu b on a.product_id = b.product_id
+        JOIN dannys_diner.menu b ON a.product_id = b.product_id
     GROUP BY
         a.customer_id
         , b.product_name
@@ -62,6 +62,32 @@ FROM temp
 WHERE temp.date_rank = 1
 
 -- 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
+-- Solution #1
+WITH orders AS (
+    SELECT
+        b.product_name
+        , count(a.order_date) order_count
+    FROM dannys_diner.sales a
+        JOIN dannys_diner.menu b ON a.product_id = b.product_id
+    GROUP BY
+        b.product_name
+    ),
+
+    ranks AS (
+    SELECT
+        product_name
+        , order_count
+    , DENSE_RANK ( ) OVER (ORDER BY order_count DESC) AS order_rank
+    FROM orders
+    )
+
+SELECT
+    product_name
+    , order_count
+FROM ranks
+WHERE order_rank = 1
+
+
 -- 5. Which item was the most popular for each customer?
 -- 6. Which item was purchased first by the customer after they became a member?
 -- 7. Which item was purchased just before the customer became a member?
