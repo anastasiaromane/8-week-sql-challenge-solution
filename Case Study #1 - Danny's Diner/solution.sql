@@ -25,7 +25,8 @@ ORDER BY
     a.customer_id
 
 -- 3. What was the first item from the menu purchased by each customer?
--- Solution #1
+
+-- **** SOLUTION **** #1
 SELECT *
 FROM (
     SELECT
@@ -43,7 +44,8 @@ FROM (
     ) temp
 WHERE temp.date_rank = 1
 
--- Solution #2 with CTE
+
+-- **** SOLUTION **** #2 with CTE
 WITH temp AS (
     SELECT
         a.customer_id
@@ -63,8 +65,10 @@ SELECT *
 FROM temp
 WHERE temp.date_rank = 1
 
--- 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
--- Solution #1
+-- 4. What is the most purchased item on the menu and how many times was it 
+-- purchased by all customers?
+
+-- **** SOLUTION **** #1
 WITH orders AS (
     SELECT
         b.product_name
@@ -101,7 +105,8 @@ ORDER BY count(*) DESC
 limit 1
 
 -- 5. Which item was the most popular for each customer?
--- Solution
+
+-- **** SOLUTION ****
 WITH ranks AS(
     SELECT
         a.customer_id
@@ -121,9 +126,12 @@ SELECT
 FROM ranks
 WHERE order_rank = 1
 
--- 6. Which item was purchased first by the customer after they became a member?
--- Solution
--- Asumption - Considering the order occured on the day they became a member (a.order_date >= c.join_date)
+-- 6. Which item was purchased first by the customer after they became a 
+-- member?
+
+-- **** SOLUTION ****
+-- Asumption - Considering the order occured on the day they became a member 
+-- (a.order_date >= c.join_date)
 WITH ranks AS (
     SELECT
         a.customer_id
@@ -155,8 +163,10 @@ FROM ranks
 WHERE date_rank = 1
 
 -- 7. Which item was purchased just before the customer became a member?
--- Solution
--- Asumption - Not considering the order occured on the day they became a member (a.order_date < c.join_date)
+
+-- **** SOLUTION ****
+-- Asumption - Not considering the order occured on the day they became a 
+-- member (a.order_date < c.join_date)
 WITH ranks AS (
     SELECT
         a.customer_id
@@ -187,9 +197,12 @@ SELECT
 FROM ranks
 WHERE date_rank = 1
 
--- 8. What is the total items and amount spent for each member before they became a member?
--- Solution
--- Asumption - Not considering the order occured on the day they became a member (a.order_date < c.join_date)
+-- 8. What is the total items and amount spent for each member before they 
+-- became a member?
+
+-- **** SOLUTION ****
+-- Asumption - Not considering the order occured on the day they became a 
+-- member (a.order_date < c.join_date)
 SELECT
     a.customer_id
     , c.join_date
@@ -197,7 +210,7 @@ SELECT
     , sum(price)    AS expenses
 FROM dannys_diner.sales a
     JOIN dannys_diner.menu b ON a.product_id = b.product_id
-    LEFT JOIN dannys_diner.members c ON a.customer_id = c.customer_id
+    JOIN dannys_diner.members c ON a.customer_id = c.customer_id
 WHERE a.order_date < c.join_date
 GROUP BY
     a.customer_id
@@ -205,9 +218,12 @@ GROUP BY
 ORDER BY
     a.customer_id
 
--- 9.  If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
--- Solution 
--- Assumption - that the membership applies to the order occured on the day they became a member (a.order_date >= c.join_date)
+-- 9.  If each $1 spent equates to 10 points and sushi has a 2x points 
+-- multiplier - how many points would each customer have?
+
+-- **** SOLUTION ****
+-- Assumption - that the membership applies to the order occured on the day 
+-- they became a member (a.order_date >= c.join_date)
 SELECT
     a.customer_id
     , sum(b.points)  AS points
