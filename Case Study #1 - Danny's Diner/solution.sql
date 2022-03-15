@@ -182,7 +182,6 @@ SELECT
     , product_name
     , order_date
     , join_date
-    , date_rank
 FROM ranks
 WHERE date_rank = 1
 
