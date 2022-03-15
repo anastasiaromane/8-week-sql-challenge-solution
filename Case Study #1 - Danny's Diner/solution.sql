@@ -247,4 +247,32 @@ GROUP BY
 ORDER BY
     a.customer_id
 
--- 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
+-- 10. In the first week after a customer joins the program (including their 
+-- join date) they earn 2x points on all items, not just sushi - how many 
+-- points do customer A and B have at the end of January?
+
+-- **** SOLUTION ****
+-- Asumption - the first week equals 7 days where the first day is the join 
+-- date, so to find the end day of the first week - c.join_date + 6
+SELECT
+    a.customer_id
+    , SUM(CASE
+          WHEN (b.product_id = 1)
+            OR (a.order_date <= (c.join_date + 6))
+            THEN price * 10 * 2
+          ELSE price * 10
+      END)     AS points
+FROM dannys_diner.sales a
+
+    JOIN dannys_diner.menu b ON a.product_id = b.product_id
+
+    JOIN dannys_diner.members c ON a.customer_id = c.customer_id
+
+WHERE 
+    a.order_date <= '2021-01-31'
+    AND a.order_date >= c.join_date
+    
+GROUP BY
+    a.customer_id
+ORDER BY
+    a.customer_id
