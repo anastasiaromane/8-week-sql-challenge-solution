@@ -3,18 +3,29 @@
 
 -- **** SOLUTION ****
 SELECT 
-COUNT(DISTINCT a.order_id) AS orders
+COUNT(DISTINCT a.order_id)      AS orders
 FROM pizza_runner.customer_orders a
 
 -- 2. How many unique customer orders were made?
 
 -- **** SOLUTION ****
 SELECT 
-COUNT(DISTINCT a.customer_id) AS customers
+COUNT(DISTINCT a.customer_id)   AS customers
 FROM pizza_runner.customer_orders a
 
--- How many successful orders were delivered by each runner?
+-- 3. How many successful orders were delivered by each runner?
 
+-- **** SOLUTION ****
+SELECT
+    a.runner_id,
+    COUNT(DISTINCT a.order_id)      AS orders
+FROM pizza_runner.runner_orders a
+WHERE COALESCE(a.cancellation, 'null') NOT IN ('Restaurant Cancellation',
+    'Customer Cancellation')
+GROUP BY
+    a.runner_id
+ORDER BY
+    a.runner_id
 
 -- How many of each type of pizza was delivered?
 -- How many Vegetarian and Meatlovers were ordered by each customer?
