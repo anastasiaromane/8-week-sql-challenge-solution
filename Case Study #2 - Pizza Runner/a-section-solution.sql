@@ -27,10 +27,18 @@ GROUP BY
 ORDER BY
     a.runner_id
 
--- How many of each type of pizza was delivered?
+-- 4. How many of each type of pizza was delivered?
 
 -- **** SOLUTION ****
-
+SELECT 
+    b.pizza_id
+    , b.pizza_name
+    , COUNT(a.order_id)      AS orders
+FROM pizza_runner.customer_orders a
+J   OIN pizza_runner.pizza_names b ON (a.pizza_id = b.pizza_id)
+GROUP BY
+    b.pizza_id
+    , b.pizza_name
 
 -- How many Vegetarian and Meatlovers were ordered by each customer?
 -- What was the maximum number of pizzas delivered in a single order?
