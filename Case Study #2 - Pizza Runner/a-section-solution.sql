@@ -40,7 +40,39 @@ GROUP BY
     b.pizza_id
     , b.pizza_name
 
--- How many Vegetarian and Meatlovers were ordered by each customer?
+-- 5. How many Vegetarian and Meatlovers were ordered by each customer?
+
+-- **** SOLUTION ****
+SELECT 
+    a.customer_id
+    , b.pizza_name
+    , COUNT(a.order_id)      AS orders
+FROM pizza_runner.customer_orders a
+    JOIN pizza_runner.pizza_names b ON (a.pizza_id = b.pizza_id)
+GROUP BY
+    a.customer_id
+    , b.pizza_name
+ORDER BY
+    a.customer_id
+
+-- **** ALTERNATIVE SOLUTION ****
+SELECT 
+a.customer_id
+    , COUNT(CASE 
+                WHEN  b.pizza_id = 1 
+                THEN a.order_id
+           END)      AS count_meatlovers
+     , COUNT(CASE 
+                WHEN  b.pizza_id = 2 
+                THEN a.order_id
+           END)      AS count_vegetarian
+FROM pizza_runner.customer_orders a
+    JOIN pizza_runner.pizza_names b ON (a.pizza_id = b.pizza_id)
+GROUP BY
+    a.customer_id
+ORDER BY
+    a.customer_id
+
 -- What was the maximum number of pizzas delivered in a single order?
 -- For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 -- How many pizzas were delivered that had both exclusions and extras?
