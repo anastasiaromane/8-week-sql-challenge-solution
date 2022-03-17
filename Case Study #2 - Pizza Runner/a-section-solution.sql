@@ -36,6 +36,9 @@ SELECT
     , COUNT(a.order_id)      AS orders
 FROM pizza_runner.customer_orders a
     JOIN pizza_runner.pizza_names b ON (a.pizza_id = b.pizza_id)
+    JOIN pizza_runner.runner_orders c ON (a.order_id = c.order_id)
+WHERE COALESCE(c.cancellation, 'null') NOT IN ('Restaurant Cancellation',
+    'Customer Cancellation')
 GROUP BY
     b.pizza_id
     , b.pizza_name
@@ -107,7 +110,12 @@ FROM ranks
 WHERE ranks.pizza_rank = 1
 
 
--- For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+-- For each customer, how many delivered pizzas had at least 1 change and how 
+-- many had no changes?
+
+-- **** SOLUTION ****
+
+
 -- How many pizzas were delivered that had both exclusions and extras?
 -- What was the total volume of pizzas ordered for each hour of the day?
 -- What was the volume of orders for each day of the week?
