@@ -3,7 +3,7 @@
 
 -- **** SOLUTION ****
 SELECT 
-COUNT(DISTINCT a.order_id)      AS orders
+COUNT(a.pizza_id)      AS pizzas_ordered
 FROM pizza_runner.customer_orders a
 
 -- 2. How many unique customer orders were made?
@@ -28,6 +28,10 @@ ORDER BY
     a.runner_id
 
 -- How many of each type of pizza was delivered?
+
+-- **** SOLUTION ****
+
+
 -- How many Vegetarian and Meatlovers were ordered by each customer?
 -- What was the maximum number of pizzas delivered in a single order?
 -- For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
