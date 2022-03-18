@@ -149,7 +149,36 @@ GROUP BY
 ORDER BY
     a.customer_id
 
--- How many pizzas were delivered that had both exclusions and extras?
+-- 8. How many pizzas were delivered that had both exclusions and extras?
+
+-- **** SOLUTION ****
+WITH changes AS (
+    SELECT 
+        customer_id
+        , order_id
+        , pizza_id
+        , CASE 
+            WHEN COALESCE(REPLACE(exclusions, 'null' , ''),'') <> ''
+                AND COALESCE(REPLACE(extras, 'null' , ''),'') <> ''
+            THEN 1
+            ELSE 0
+        END             AS order_change
+    FROM pizza_runner.customer_orders
+    )
+
+SELECT 
+    COUNT(
+        CASE 
+            WHEN a.order_change = 1
+                THEN a.pizza_id
+      END)              AS delivered_with_both_changes
+FROM changes a
+    JOIN pizza_runner.runner_orders b ON (a.order_id = b.order_id)
+WHERE COALESCE(b.cancellation, 'null') NOT IN ('Restaurant Cancellation',
+    'Customer Cancellation')
+
+
+
 -- What was the total volume of pizzas ordered for each hour of the day?
 -- What was the volume of orders for each day of the week?
 
