@@ -110,11 +110,44 @@ FROM ranks
 WHERE ranks.pizza_rank = 1
 
 
--- For each customer, how many delivered pizzas had at least 1 change and how 
+-- 7. For each customer, how many delivered pizzas had at least 1 change and how 
 -- many had no changes?
 
 -- **** SOLUTION ****
+WITH changes AS (
+    SELECT 
+        customer_id
+        , order_id
+        , pizza_id
+        , CASE 
+            WHEN COALESCE(REPLACE(exclusions, 'null' , ''),'') = ''
+                AND COALESCE(REPLACE(extras, 'null' , ''),'') = ''
+            THEN 0
+            ELSE 1
+        END             AS order_change
+    FROM pizza_runner.customer_orders
+    )
 
+SELECT 
+    a.customer_id
+    , COUNT(
+        CASE 
+            WHEN a.order_change = 0
+            THEN a.pizza_id
+        END)            AS delivered_without_changes
+    , COUNT(
+        CASE 
+            WHEN a.order_change = 1
+                THEN a.pizza_id
+      END)              AS delivered_with_changes
+FROM changes a
+    JOIN pizza_runner.runner_orders b ON (a.order_id = b.order_id)
+WHERE COALESCE(b.cancellation, 'null') NOT IN ('Restaurant Cancellation',
+    'Customer Cancellation')
+GROUP BY
+    a.customer_id
+ORDER BY
+    a.customer_id
 
 -- How many pizzas were delivered that had both exclusions and extras?
 -- What was the total volume of pizzas ordered for each hour of the day?
