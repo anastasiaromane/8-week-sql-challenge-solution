@@ -178,7 +178,17 @@ WHERE COALESCE(b.cancellation, 'null') NOT IN ('Restaurant Cancellation',
     'Customer Cancellation')
 
 
+-- 9. What was the total volume of pizzas ordered for each hour of the day?
 
--- What was the total volume of pizzas ordered for each hour of the day?
+-- **** SOLUTION ****
+SELECT
+    EXTRACT(HOUR FROM order_time) AS hour
+    , COUNT(pizza_id)
+FROM pizza_runner.customer_orders
+GROUP BY
+    EXTRACT(HOUR FROM order_time)
+ORDER BY 
+    EXTRACT(HOUR FROM order_time)
+
 -- What was the volume of orders for each day of the week?
 
