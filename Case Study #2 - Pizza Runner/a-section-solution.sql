@@ -190,5 +190,14 @@ GROUP BY
 ORDER BY 
     EXTRACT(HOUR FROM order_time)
 
--- What was the volume of orders for each day of the week?
+-- 10. What was the volume of orders for each day of the week?
+
+-- **** SOLUTION ****
+SELECT
+    to_char(order_time, 'Day') AS day_of_week
+    , COUNT(pizza_id)
+FROM pizza_runner.customer_orders
+GROUP BY
+    to_char(order_time, 'Day')
+
 
