@@ -55,7 +55,21 @@ ORDER BY
 
 
 -- **** SOLUTION ****
-
+WITH dur AS (
+    SELECT
+        a.order_id
+        , CAST(regexp_replace(a.duration, '[^\d.,]+', '') AS DECIMAL) 
+            AS duration
+    FROM pizza_runner.runner_orders a
+    WHERE a.pickup_time <> 'null'
+    ORDER BY
+        a.order_id
+    ) 
+SELECT
+    MAX(duration)
+    , MIN(duration)
+    , MAX(duration) - MIN(duration) AS diff_duration
+FROM dur
 
 -- What was the average speed for each runner for each delivery and do you notice any trend for these values?
 -- What is the successful delivery percentage for each runner?
