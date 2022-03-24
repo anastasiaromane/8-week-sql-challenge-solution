@@ -90,13 +90,18 @@ WITH temp AS (
     )
 SELECT
     runner_id
+    , order_id
     , ROUND(AVG(distance / duration), 0) AS speed
 FROM temp
 GROUP BY
     runner_id
+    , order_id
+ORDER BY
+    runner_id
+    , order_id
 
 
 
+-- 7. What is the successful delivery percentage for each runner?
 
--- What is the successful delivery percentage for each runner?
-
+-- **** SOLUTION ****
