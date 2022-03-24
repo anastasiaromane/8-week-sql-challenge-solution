@@ -1,5 +1,6 @@
 -- B. Runner and Customer Experience Metrics
--- 1. How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
+-- 1. How many runners signed up for each 1 week period? (i.e. week starts 
+-- 2021-01-01)
 
 -- 2. What was the average time in minutes it took for each runner to arrive at 
 -- the Pizza Runner HQ to pickup the order?
@@ -34,8 +35,28 @@ GROUP BY
 ORDER BY
     prep_time DESC
 
--- What was the average distance travelled for each customer?
--- What was the difference between the longest and shortest delivery times for all orders?
+-- 4. What was the average distance travelled for each customer?
+
+-- **** SOLUTION ****
+SELECT
+    b.customer_id
+    , ROUND(AVG(CAST(regexp_replace(a.distance, '[^\d.,]+', '') AS DECIMAL)), 
+        1) AS avg_distance
+FROM pizza_runner.runner_orders a
+    JOIN pizza_runner.customer_orders b ON (a.order_id = b.order_id)
+WHERE a.pickup_time <> 'null'
+GROUP BY
+    b.customer_id
+ORDER BY
+    b.customer_id
+
+-- 5. What was the difference between the longest and shortest delivery times 
+-- for all orders?
+
+
+-- **** SOLUTION ****
+
+
 -- What was the average speed for each runner for each delivery and do you notice any trend for these values?
 -- What is the successful delivery percentage for each runner?
 
