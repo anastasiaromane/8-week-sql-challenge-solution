@@ -105,3 +105,24 @@ ORDER BY
 -- 7. What is the successful delivery percentage for each runner?
 
 -- **** SOLUTION ****
+WITH orders AS (
+    SELECT
+        a.runner_id
+        , CAST(
+            COUNT(
+                CASE 
+                    WHEN a.pickup_time <> 'null'
+                        THEN a.order_id 
+                END) 
+            AS DECIMAL)                             AS success_orders
+        , CAST(COUNT(a.order_id) AS DECIMAL)        AS orders
+    FROM pizza_runner.runner_orders a
+    GROUP BY
+    a.runner_id
+    )
+SELECT
+    runner_id
+    , ROUND(success_orders / orders * 100, 0)       AS perc_success_orders
+FROM orders
+ORDER BY runner_id
+
