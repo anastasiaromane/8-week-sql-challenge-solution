@@ -71,6 +71,32 @@ SELECT
     , MAX(duration) - MIN(duration) AS diff_duration
 FROM dur
 
--- What was the average speed for each runner for each delivery and do you notice any trend for these values?
+-- 6. What was the average speed for each runner for each delivery and do you 
+-- notice any trend for these values?
+
+-- **** SOLUTION ****
+WITH temp AS (
+    SELECT
+        a.runner_id
+        , a.order_id
+        , ROUND(CAST(regexp_replace(a.duration, '[^\d.,]+', '') AS DECIMAL) 
+            / 60, 2) AS duration
+        , CAST(regexp_replace(a.distance, '[^\d.,]+', '') AS DECIMAL)
+            AS distance
+    FROM pizza_runner.runner_orders a
+    WHERE a.pickup_time <> 'null'
+    ORDER BY
+        a.runner_id
+    )
+SELECT
+    runner_id
+    , ROUND(AVG(distance / duration), 0) AS speed
+FROM temp
+GROUP BY
+    runner_id
+
+
+
+
 -- What is the successful delivery percentage for each runner?
 
