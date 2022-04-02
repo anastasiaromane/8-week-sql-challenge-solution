@@ -24,7 +24,7 @@ ORDER BY
 -- **** SOLUTION ****
 SELECT
     a.order_id
-    , count(a.pizza_id)
+    , COUNT(a.pizza_id)
     , SUM(EXTRACT('minutes' FROM TO_TIMESTAMP(b.pickup_time,
         'YYYY-MM-DD hh24:mi:ss') - a.order_time)) AS prep_time
 FROM pizza_runner.customer_orders  a
