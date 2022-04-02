@@ -26,7 +26,31 @@ FROM ranks
 WHERE topping_rank = 1
 
 
--- What was the most commonly added extra?
+-- 2. What was the most commonly added extra?
+WITH extras AS (
+    SELECT
+        CAST(UNNEST(STRING_TO_ARRAY(COALESCE(REPLACE(extras, 'null' , ''),''),
+            ',' )) AS INTEGER) AS extra_id
+    FROM pizza_runner.customer_orders
+    ),
+
+    ranks AS (
+    SELECT
+        a.extra_id
+        , b.topping_name 
+        , DENSE_RANK() OVER (ORDER BY COUNT(a.extra_id) DESC) AS rank
+    FROM extras a
+        JOIN pizza_runner.pizza_toppings b ON (a.extra_id = b.topping_id)
+    GROUP BY
+        a.extra_id
+        , b.topping_name 
+    )
+SELECT
+    extra_id
+    , topping_name 
+FROM ranks
+WHERE rank = 1
+
 -- What was the most common exclusion?
 -- Generate an order item for each record in the customers_orders table in the format of one of the following:
 -- Meat Lovers
